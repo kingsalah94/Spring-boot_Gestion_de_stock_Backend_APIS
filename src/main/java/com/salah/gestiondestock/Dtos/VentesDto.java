@@ -6,6 +6,7 @@ import lombok.Data;
 import java.time.Instant;
 
 @Data
+@Builder
 public class VentesDto {
 
     private Integer id;

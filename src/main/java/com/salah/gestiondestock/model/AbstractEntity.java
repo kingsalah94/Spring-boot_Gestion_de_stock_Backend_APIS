@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.Date;
 
 @Data
+
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class AbstractEntity implements Serializable {
@@ -26,4 +27,12 @@ public class AbstractEntity implements Serializable {
     @LastModifiedDate
     @Column(name = "lastModifiedDate")
     private Instant lastModifiedDate;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

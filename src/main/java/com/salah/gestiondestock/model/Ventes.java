@@ -12,6 +12,9 @@ import java.time.Instant;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -33,4 +36,5 @@ public class Ventes extends AbstractEntity {
 
     @OneToMany(mappedBy = "vente")
     private List<LigneVente> ligneVentes;
+    
 }
