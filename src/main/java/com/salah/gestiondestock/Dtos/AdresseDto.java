@@ -1,6 +1,5 @@
 package com.salah.gestiondestock.Dtos;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -12,4 +11,5 @@ public class AdresseDto {
     private String ville;
     private String codePostale;
     private String pays;
+    // You can add additional fields or methods if needed
 }

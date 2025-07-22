@@ -1,5 +1,6 @@
 package com.salah.gestiondestock.Dtos;
 
+import com.salah.gestiondestock.Enums.SourceMouvementStock;
 import com.salah.gestiondestock.Enums.TypeMouvementStock;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +18,11 @@ public class MouvementDeStockDto {
     private ArticlesDto articlesDto;
 
     private TypeMouvementStock typeMouvementStock;
+
+    private SourceMouvementStock sourceMouvementStock;
+
+    private Integer idEntreprise;
+
 }
+
+

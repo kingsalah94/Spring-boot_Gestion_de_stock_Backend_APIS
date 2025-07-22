@@ -7,8 +7,9 @@ import java.util.List;
 
 @Data
 public class CategoryDto {
-    //private Integer id;
+    private Integer id;
     private String code;
     private String designation;
+    private Integer idEntreprise;
     private List<ArticlesDto> articlesDtos;
 }

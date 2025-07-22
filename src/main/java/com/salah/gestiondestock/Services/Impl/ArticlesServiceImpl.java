@@ -65,76 +65,20 @@ public class ArticlesServiceImpl implements ArticlesService {
     }
 
 
-//    @Override
-//    public ArticlesDto addArticles(ArticlesDto articlesDto) {
-//        List<String> errors = ArticleValidator.validate(articlesDto);
-//        if (!errors.isEmpty()) {
-//            //Logger l'erreur
-//            log.error("Error while adding articles, Article is not valid {}",articlesDto);
-//            //Lever l'exception
-//            throw new InvalideEntityException("L'article n'est pas valide", ErrorCodes.ARTICLE_NOT_VALIDE, errors);
-//        }
-//        Articles articles = dtoMapper.fromArticlesDTO(articlesDto);
-//        Articles addedArticles = articlesRepository.save(articles);
-//        return dtoMapper.fromArticles(addedArticles);
-//    }
-//
-//    @Override
-//    public ArticlesDto updateArticles(ArticlesDto articlesDto) {
-//        List<String> errors = ArticleValidator.validate(articlesDto);
-//        if (!errors.isEmpty()) {
-//            log.error("Error while updating articles, Article is not valid {}",articlesDto);
-//            throw new InvalideEntityException("Larticles n'est pas valide", ErrorCodes.ARTICLE_NOT_VALIDE, errors);
-//        }
-//        Articles articles = dtoMapper.fromArticlesDTO(articlesDto);
-//        Articles updatedArticles = articlesRepository.save(articles);
-//        return dtoMapper.fromArticles(updatedArticles);
-//    }
-//
-//
-//    @Override
-//    public ArticlesDto getOneArticles(Integer id) throws EntityNotFoundException {
-//        if (id == null) {
-//            log.error("Articles ID is null ");
-//            return null;
-//        }
-//        Articles articles = articlesRepository.findById(id)
-//                .orElseThrow(()->new EntityNotFoundException("Articles not found",ErrorCodes.ARTICLE_NOT_FOUND));
-//        return dtoMapper.fromArticles(articles);
-//    }
-//
-//    @Override
-//    public ArticlesDto getArticleByCodeArticle(String codeArticle) throws EntityNotFoundException {
-//        if (!StringUtils.hasLength(codeArticle)){
-//            log.error("Article code is null ");
-//            return null;
-//        }
-//        Articles articles = articlesRepository.findArticlesByCodeArticle(codeArticle)
-//                .orElseThrow(()->new EntityNotFoundException("Articles not found",ErrorCodes.ARTICLE_NOT_FOUND));
-//        return dtoMapper.fromArticles(articles);
-//    }
-//
-//    @Override
-//    public List<ArticlesDto> getAllArticles() {
-//        List<Articles> articles = articlesRepository.findAll();
-//        return articles.stream()
-//                .map(articles1 -> dtoMapper.fromArticles(articles1))
-//                .collect(Collectors.toList());
-//    }
-
-
-
-
-
-//    @Override
-//    public void deleteArticles(Integer id) {
-//        if (id == null) {
-//            log.error("Articles ID is null {}",error);
-//            return;
-//        }
-//        articlesRepository.deleteById(id);
-//    }
-
+    @Override
+    public ArticlesDto update(Long id, ArticlesDto dto) {
+        Articles existingArticle = articlesRepository.findById(id.intValue())
+                .orElseThrow(() -> new EntityNotFoundException("Article non trouvé avec ID : " + id));
+        // Update fields from dto
+        existingArticle.setCodeArticle(dto.getCodeArticle());
+        existingArticle.setDesignation(dto.getDesignation());
+        existingArticle.setPrixUnitaireHt(dto.getPrixUnitaireHt());
+        existingArticle.setPrixUnitaireTtc(dto.getPrixUnitaireTtc());
+        existingArticle.setTauxTva(dto.getTauxTva());
+        existingArticle.setCategory(dto.getCategory() != null ? articlesMapper.toEntity(dto.getCategory()) : null);
+        Articles updatedArticle = articlesRepository.save(existingArticle);
+        return articlesMapper.toDto(updatedArticle);
+    }
 
 
 }

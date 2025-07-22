@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 public class ClientDto {
     private Integer id;
@@ -21,6 +23,8 @@ public class ClientDto {
 
     private AdresseDto adresseDto;
 
+    private Integer idEntreprise;
 
-    private List<CommandClientDto> commandClientDtos;
+    @JsonIgnore
+    private List<CommandClientDto> commandeClientDtos;
 }

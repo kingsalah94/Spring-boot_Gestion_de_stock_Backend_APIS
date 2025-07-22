@@ -16,12 +16,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDto> handleException(EntityNotFoundException entityNotFoundException, WebRequest webRequest){
         final HttpStatus notFound = HttpStatus.NOT_FOUND;
 
-        // Création d'un objet ErrorDto en utilisant le builder pattern et l'assignant à une variable
-        final ErrorDto errorDto = ErrorDto.builder()
-                .errorCodes(entityNotFoundException.getErrorCodes())
-                .httpCode(notFound.value())
-                .message(entityNotFoundException.getMessage())
-                .build();
+        // Création d'un objet ErrorDto en utilisant le constructeur ou les setters
+        final ErrorDto errorDto = new ErrorDto();
+        errorDto.setErrorCodes(entityNotFoundException.getErrorCodes());
+        errorDto.setHttpCode(notFound.value());
+        errorDto.setMessage(entityNotFoundException.getMessage());
         // Retourner une ResponseEntity contenant l'objet ErrorDto créé
         return  new ResponseEntity<>(errorDto, notFound);
     }
@@ -31,13 +30,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         final HttpStatus badRequest = HttpStatus.BAD_REQUEST;
 
         // Création d'un objet ErrorDto en utilisant le builder pattern et l'assignant à une variable
-        final ErrorDto errorDto = ErrorDto.builder()
-                .errorCodes(invalideEntityException.getErrorCodes())
-                .httpCode(badRequest.value())
-                .message(invalideEntityException.getMessage())
-                .errors(invalideEntityException.getErrors())
-                .build();
-        // Retourner une ResponseEntity contenant l'objet ErrorDto créé
+        // Création d'un objet ErrorDto en utilisant le constructeur ou les setters
+        final ErrorDto errorDto = new ErrorDto();
+        errorDto.setErrorCodes(invalideEntityException.getErrorCodes());
+        errorDto.setHttpCode(badRequest.value());
+        errorDto.setMessage(invalideEntityException.getMessage());
+        errorDto.setErrors(invalideEntityException.getErrors());
         return new ResponseEntity<>(errorDto,badRequest);
     }
 }
