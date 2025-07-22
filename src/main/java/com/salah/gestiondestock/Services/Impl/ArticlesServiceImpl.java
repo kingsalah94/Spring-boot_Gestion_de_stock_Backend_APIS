@@ -64,21 +64,7 @@ public class ArticlesServiceImpl implements ArticlesService {
         articlesRepository.deleteById(id);
     }
 
-    @Override
-    public ArticlesDto update(Long id, ArticlesDto dto) {
-        Articles existingArticle = articlesRepository.findById(Math.toIntExact(id))
-                .orElseThrow(() -> new EntityNotFoundException("Article non trouvé avec ID = " + id));
 
-        // Met à jour les champs manuellement ou via MapStruct
-        existingArticle.setCodeArticle(dto.getCodeArticle());
-        existingArticle.setDesignation(dto.getDesignation());
-        existingArticle.setPrixUnitaireHt(dto.getPrixUnitaireHt());
-        existingArticle.setPrixUnitaireTtc(dto.getPrixUnitaireTtc());
-        existingArticle.setTauxTva(dto.getTauxTva());
-        //existingArticle.setCategory(dto.getCategory()); // ou mapper
-
-        return ArticlesMapper.INSTANCE.toDto(articlesRepository.save(existingArticle));
-    }
 //    @Override
 //    public ArticlesDto addArticles(ArticlesDto articlesDto) {
 //        List<String> errors = ArticleValidator.validate(articlesDto);
