@@ -9,5 +9,5 @@ public interface CategoryRepository extends JpaRepository<Category,Integer> {
 
     Optional<Category> findCategoryByCode(String code);
 
-    Optional<Object> findByCode(String code);
+    // Optional<Object> findByCode(String code);
 }

@@ -10,9 +10,5 @@ import com.salah.gestiondestock.Dtos.VentesDto;
 
 public interface VentesRepository extends JpaRepository<Ventes,Integer> {
 
-    Optional<Ventes> findByCode(String code);
-
-    //public VentesDto findByIdWithArticles(Integer id);
-
-    //public VentesDto findAllWithArticles();
+    Optional<Ventes> findVentesByCode(String code);
 }
