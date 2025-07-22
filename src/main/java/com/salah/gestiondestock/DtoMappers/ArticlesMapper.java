@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Mapper(componentModel = "spring", uses = {CategoryMapper.class})
 public interface ArticlesMapper {
+    
     ArticlesMapper INSTANCE = Mappers.getMapper(ArticlesMapper.class);
 
     ArticlesDto toDto(Articles entity);
