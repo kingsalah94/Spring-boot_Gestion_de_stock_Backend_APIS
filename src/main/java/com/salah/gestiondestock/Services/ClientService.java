@@ -6,6 +6,8 @@ import com.salah.gestiondestock.Exceptions.EntityNotFoundException;
 import java.util.List;
 
 public interface ClientService {
+
+    
     ClientDto save(ClientDto dto);
 
     ClientDto findById(Integer id);

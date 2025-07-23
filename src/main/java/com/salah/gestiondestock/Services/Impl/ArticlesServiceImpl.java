@@ -1,15 +1,27 @@
 package com.salah.gestiondestock.Services.Impl;
 
-import com.salah.gestiondestock.DtoMappers.ArticlesMapper;
 import com.salah.gestiondestock.Dtos.ArticlesDto;
+import com.salah.gestiondestock.Dtos.LigneCommandeClientDto;
+import com.salah.gestiondestock.Dtos.LigneCommandeFournisseurDto;
+import com.salah.gestiondestock.Dtos.LigneVenteDto;
 import com.salah.gestiondestock.Enums.ErrorCodes;
 import com.salah.gestiondestock.Exceptions.EntityNotFoundException;
+import com.salah.gestiondestock.Exceptions.InvalidOperationException;
 import com.salah.gestiondestock.Exceptions.InvalideEntityException;
 import com.salah.gestiondestock.Repositories.ArticlesRepository;
+import com.salah.gestiondestock.Repositories.LigneCommadeFournisseurRepository;
+import com.salah.gestiondestock.Repositories.LigneCommandeClientRepository;
 import com.salah.gestiondestock.Services.ArticlesService;
 import com.salah.gestiondestock.Validators.ArticleValidator;
 import com.salah.gestiondestock.model.Articles;
+import com.salah.gestiondestock.model.LigneCommandeClient;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -18,67 +30,125 @@ import org.springframework.web.servlet.View;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.salah.gestiondestock.DtoMappers.ArticlesMapper.*;
+import com.salah.gestiondestock.Repositories.LigneVentesRepository;
+import com.salah.gestiondestock.model.LigneCommandeFournisseur;
+import com.salah.gestiondestock.model.LigneVente;
 
 @Service
 @Slf4j
+@NoArgsConstructor
+@AllArgsConstructor
 public class ArticlesServiceImpl implements ArticlesService {
 
-    private final View error;
-    private final ArticlesRepository articlesRepository;
-    private final ArticlesMapper articlesMapper;
-    @Autowired
-    public ArticlesServiceImpl(ArticlesRepository articlesRepository,
-                               ArticlesMapper articlesMapper,
-                               View error) {
-        this.articlesRepository = articlesRepository;
-        this.articlesMapper = articlesMapper;
-        this.error = error;
+    private static final Logger log = LoggerFactory.getLogger(ArticlesServiceImpl.class);
+
+  private ArticlesRepository articleRepository;
+  private LigneVentesRepository venteRepository;
+  private LigneCommadeFournisseurRepository commandeFournisseurRepository;
+  private LigneCommandeClientRepository commandeClientRepository;
+
+
+
+  @Override
+  public ArticlesDto save(ArticlesDto dto) {
+    List<String> errors = ArticleValidator.validate(dto);
+    if (!errors.isEmpty()) {
+      log.error("Article is not valid {}", dto);
+      throw new InvalideEntityException("L'article n'est pas valide", ErrorCodes.ARTICLE_NOT_VALID, errors);
     }
 
+    return ArticlesDto.fromEntity(
+        articleRepository.save(
+            ArticlesDto.toEntity(dto)
+        )
+    );
+  }
 
-    @Override
-    public ArticlesDto save(ArticlesDto dto) {
-        Articles entity = articlesMapper.toEntity(dto);
-        Articles saved = articlesRepository.save(entity);
-        return articlesMapper.toDto(saved);
+  @Override
+  public ArticlesDto findById(Integer id) {
+    if (id == null) {
+      log.error("Article ID is null");
+      return null;
     }
 
-    @Override
-    public ArticlesDto findById(Integer id) {
-        return articlesRepository.findById(id)
-                .map(articlesMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("Article non trouvé avec ID : " + id));
+    return articleRepository.findById(id).map(ArticlesDto::fromEntity).orElseThrow(() ->
+        new EntityNotFoundException(
+            "Aucun article avec l'ID = " + id + " n' ete trouve dans la BDD",
+            ErrorCodes.ARTICLE_NOT_FOUND)
+    );
+  }
+
+  @Override
+  public ArticlesDto findByCodeArticle(String codeArticle) {
+    if (!StringUtils.hasLength(codeArticle)) {
+      log.error("Article CODE is null");
+      return null;
     }
 
-    @Override
-    public List<ArticlesDto> findAll() {
-        return articlesRepository.findAll()
-                .stream()
-                .map(articlesMapper::toDto)
-                .collect(Collectors.toList());
+    return articleRepository.findArticlesByCodeArticle(codeArticle)
+        .map(ArticlesDto::fromEntity)
+        .orElseThrow(() ->
+            new EntityNotFoundException(
+                "Aucun article avec le CODE = " + codeArticle + " n' ete trouve dans la BDD",
+                ErrorCodes.ARTICLE_NOT_FOUND)
+        );
+  }
+
+  @Override
+  public List<ArticlesDto> findAll() {
+    return articleRepository.findAll().stream()
+        .map(ArticlesDto::fromEntity)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<LigneVenteDto> findHistoriqueVentes(Integer idArticle) {
+    return venteRepository.findAllByArticle(idArticle).stream()
+        .map(LigneVenteDto::fromEntity)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<LigneCommandeClientDto> findHistoriqueCommandeClient(Integer idArticle) {
+    return commandeClientRepository.findAllByArticle(idArticle).stream()
+        .map(LigneCommandeClientDto::fromEntity)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<LigneCommandeFournisseurDto> findHistoriqueCommandeFournisseur(Integer idArticle) {
+    return commandeFournisseurRepository.findAllByArticle(idArticle).stream()
+        .map(LigneCommandeFournisseurDto::fromEntity)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<ArticlesDto> findAllArticleByIdCategory(Integer idCategory) {
+    return articleRepository.findAllByCategory(idCategory).stream()
+        .map(ArticlesDto::fromEntity)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public void delete(Integer id) {
+    if (id == null) {
+      log.error("Article ID is null");
+      return;
     }
-
-    @Override
-    public void delete(Integer id) {
-        articlesRepository.deleteById(id);
+    List<LigneCommandeClient> ligneCommandeClients = commandeClientRepository.findAllByArticle(id);
+    if (!ligneCommandeClients.isEmpty()) {
+      throw new InvalidOperationException("Impossible de supprimer un article deja utilise dans des commandes client", ErrorCodes.ARTICLE_ALREADY_IN_USE);
     }
-
-
-    @Override
-    public ArticlesDto update(Long id, ArticlesDto dto) {
-        Articles existingArticle = articlesRepository.findById(id.intValue())
-                .orElseThrow(() -> new EntityNotFoundException("Article non trouvé avec ID : " + id));
-        // Update fields from dto
-        existingArticle.setCodeArticle(dto.getCodeArticle());
-        existingArticle.setDesignation(dto.getDesignation());
-        existingArticle.setPrixUnitaireHt(dto.getPrixUnitaireHt());
-        existingArticle.setPrixUnitaireTtc(dto.getPrixUnitaireTtc());
-        existingArticle.setTauxTva(dto.getTauxTva());
-        existingArticle.setCategory(dto.getCategory() != null ? articlesMapper.toEntity(dto.getCategory()) : null);
-        Articles updatedArticle = articlesRepository.save(existingArticle);
-        return articlesMapper.toDto(updatedArticle);
+    List<LigneCommandeFournisseur> ligneCommandeFournisseurs = commandeFournisseurRepository.findAllByArticle(id);
+    if (!ligneCommandeFournisseurs.isEmpty()) {
+      throw new InvalidOperationException("Impossible de supprimer un article deja utilise dans des commandes fournisseur",
+          ErrorCodes.ARTICLE_ALREADY_IN_USE);
     }
-
-
+    List<LigneVente> ligneVentes = venteRepository.findAllByArticle(id);
+    if (!ligneVentes.isEmpty()) {
+      throw new InvalidOperationException("Impossible de supprimer un article deja utilise dans des ventes",
+          ErrorCodes.ARTICLE_ALREADY_IN_USE);
+    }
+    articleRepository.deleteById(id);
+  }
 }

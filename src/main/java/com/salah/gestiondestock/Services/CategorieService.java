@@ -6,11 +6,12 @@ import com.salah.gestiondestock.Exceptions.EntityNotFoundException;
 import java.util.List;
 
 public interface CategorieService {
+    
     CategoryDto save(CategoryDto dto);
 
     CategoryDto findById(Integer id);
 
-    //CategoryDto findByCode(String code);
+    CategoryDto findByCode(String code);
 
     List<CategoryDto> findAll();
 

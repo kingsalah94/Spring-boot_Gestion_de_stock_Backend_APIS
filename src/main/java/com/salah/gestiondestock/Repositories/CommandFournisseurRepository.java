@@ -1,6 +1,5 @@
 package com.salah.gestiondestock.Repositories;
 
-import com.salah.gestiondestock.Dtos.CommandFournisseurDto;
 import com.salah.gestiondestock.model.CommandFournisseur;
 
 import org.springframework.data.jpa.repository.JpaRepository;

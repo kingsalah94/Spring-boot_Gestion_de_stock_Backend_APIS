@@ -6,17 +6,12 @@ import java.util.List;
 
 public interface EntrepriseService {
 
-//    EntrepriseDto addEntreprise(EntrepriseDto entreprisedto);
-//
-//    List<EntrepriseDto> getAllEntreprise();
-//
-//    EntrepriseDto getEntrepriseById(Integer id);
-//
-//    EntrepriseDto getEntrepriseByName(String name);
-//
-//    EntrepriseDto updateEntreprise(EntrepriseDto entreprisedto);
-//
-//    void deleteEntreprise(Integer id);
+  EntrepriseDto save(EntrepriseDto dto);
 
+  EntrepriseDto findById(Integer id);
+
+  List<EntrepriseDto> findAll();
+
+  void delete(Integer id);
 
 }

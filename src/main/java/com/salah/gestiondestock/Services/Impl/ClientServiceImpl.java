@@ -1,14 +1,19 @@
 package com.salah.gestiondestock.Services.Impl;
 
-import com.salah.gestiondestock.DtoMappers.ClientMapper;
 import com.salah.gestiondestock.Dtos.ClientDto;
 import com.salah.gestiondestock.Enums.ErrorCodes;
 import com.salah.gestiondestock.Exceptions.EntityNotFoundException;
+import com.salah.gestiondestock.Exceptions.InvalidOperationException;
 import com.salah.gestiondestock.Exceptions.InvalideEntityException;
 import com.salah.gestiondestock.Repositories.ClientRepository;
+import com.salah.gestiondestock.Repositories.CommandClientRepository;
 import com.salah.gestiondestock.Services.ClientService;
 import com.salah.gestiondestock.Validators.ClientValidator;
 import com.salah.gestiondestock.model.Client;
+import com.salah.gestiondestock.model.CommandClient;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,42 +26,59 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
-    private final ClientRepository clientRepository;
-    private final ClientMapper clientMapper;
+ private ClientRepository clientRepository;
+  private CommandClientRepository commandeClientRepository;
 
-    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper) {
-        this.clientRepository = clientRepository;
-        this.clientMapper = clientMapper;
+  @Override
+  public ClientDto save(ClientDto dto) {
+    List<String> errors = ClientValidator.validate(dto);
+    if (!errors.isEmpty()) {
+      log.error("Client is not valid {}", dto);
+      throw new InvalideEntityException("Le client n'est pas valide", ErrorCodes.CLIENT_NOT_VALID, errors);
     }
 
-    @Override
-    public ClientDto save(ClientDto dto) {
-        Client client = clientMapper.toEntity(dto);
-        return clientMapper.toDto(clientRepository.save(client));
-    }
+    return ClientDto.fromEntity(
+        clientRepository.save(
+            ClientDto.toEntity(dto)
+        )
+    );
+  }
 
-    @Override
-    public ClientDto findById(Integer id) {
-        Optional<Client> clientOpt = clientRepository.findById(id);
-        return clientOpt
-                .map(clientMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("Aucun client trouvé avec l'ID " + id));
+  @Override
+  public ClientDto findById(Integer id) {
+    if (id == null) {
+      log.error("Client ID is null");
+      return null;
     }
+    return clientRepository.findById(id)
+        .map(ClientDto::fromEntity)
+        .orElseThrow(() -> new EntityNotFoundException(
+            "Aucun Client avec l'ID = " + id + " n' ete trouve dans la BDD",
+            ErrorCodes.CLIENT_NOT_FOUND)
+        );
+  }
 
-    @Override
-    public List<ClientDto> findAll() {
-        return clientRepository.findAll()
-                .stream()
-                .map(clientMapper::toDto)
-                .collect(Collectors.toList());
+  @Override
+  public List<ClientDto> findAll() {
+    return clientRepository.findAll().stream()
+        .map(ClientDto::fromEntity)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public void delete(Integer id) {
+    if (id == null) {
+      log.error("Client ID is null");
+      return;
     }
-
-    @Override
-    public void delete(Integer id) {
-        clientRepository.deleteById(id);
+    List<CommandClient> commandeClients = commandeClientRepository.findAllByClient(id);
+    if (!commandeClients.isEmpty()) {
+      throw new InvalidOperationException("Impossible de supprimer un client qui a deja des commande clients",
+          ErrorCodes.CLIENT_ALREADY_IN_USE);
     }
-
-//
+    clientRepository.deleteById(id);
+  }
 }

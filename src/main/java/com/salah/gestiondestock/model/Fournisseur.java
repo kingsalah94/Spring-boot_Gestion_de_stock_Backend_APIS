@@ -25,8 +25,8 @@ public class Fournisseur extends AbstractEntity{
     @Column(name = "photo")
     private String photo;
 
-    @Column(name = "mail")
-    private String mail;
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "numTel")
     private String numTel;

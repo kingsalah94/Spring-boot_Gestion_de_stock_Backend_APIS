@@ -6,7 +6,10 @@ import lombok.Data;
 import java.time.Instant;
 import java.util.List;
 
+import com.salah.gestiondestock.model.Ventes;
+
 @Data
+@Builder
 public class VentesDto {
 
     private Integer id;
@@ -19,4 +22,31 @@ public class VentesDto {
     private List<LigneVenteDto> ligneVentes;
 
     private Integer idEntreprise;
+
+
+
+    
+  public static VentesDto fromEntity(Ventes vente) {
+    if (vente == null) {
+      return null;
+    }
+    return VentesDto.builder()
+        .id(vente.getId())
+        .code(vente.getCode())
+        .commentaire(vente.getCommentaire())
+        .idEntreprise(vente.getIdEntreprise())
+        .build();
+  }
+
+  public static Ventes toEntity(VentesDto dto) {
+    if (dto == null) {
+      return null;
+    }
+    Ventes ventes = new Ventes();
+    ventes.setId(dto.getId());
+    ventes.setCode(ventes.getCode());
+    ventes.setCommentaire(dto.getCommentaire());
+    ventes.setIdEntreprise(dto.getIdEntreprise());
+    return ventes;
+  }
 }

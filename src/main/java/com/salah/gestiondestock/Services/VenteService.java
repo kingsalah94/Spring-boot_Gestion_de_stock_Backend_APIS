@@ -15,14 +15,13 @@ import com.salah.gestiondestock.Dtos.VentesDto;
  */
 public interface VenteService {
 
-    VentesDto save(VentesDto dto);
-    VentesDto findById(Integer id);
-    VentesDto update(Integer id, VentesDto dto);
-    void delete(Integer id);
-    VentesDto findByCode(String code);
-    
-   // VentesDto findByIdWithArticle(Integer id);
-    List<VentesDto> findAll();
-   // List<VentesDto> findAllWithArticle();
+   VentesDto save(VentesDto dto);
 
+  VentesDto findById(Integer id);
+
+  VentesDto findByCode(String code);
+
+  List<VentesDto> findAll();
+
+  void delete(Integer id);
 }

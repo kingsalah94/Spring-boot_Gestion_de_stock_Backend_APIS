@@ -42,7 +42,7 @@ public class Articles extends AbstractEntity{
     @OneToMany(mappedBy = "article")
     private List<LigneVente> ligneVentes;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "articles")
     private List<LigneCommandeClient> ligneCommandeClients;
 
     @OneToMany(mappedBy = "article")

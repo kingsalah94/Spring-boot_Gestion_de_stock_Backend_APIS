@@ -18,14 +18,14 @@ public interface MouvementStockService {
 
     BigDecimal stockReelArticle(Integer idArticle);
 
-    List<MouvementDeStockDto> mouvementsStockArticle(Integer idArticle);
+    List<MouvementDeStockDto> mvtStkArticle(Integer idArticle);
 
     MouvementDeStockDto entreeStock(MouvementDeStockDto dto);
 
-    MouvementDeStockDto sortieStock(MouvementDeStockDto dto);
+    MouvementDeStockDto sortieStock(MouvementDeStockDto mapper);
 
-    MouvementDeStockDto correctionStockPositif(MouvementDeStockDto dto);
+    MouvementDeStockDto correctionStockPos(MouvementDeStockDto dto);
 
-    MouvementDeStockDto correctionStockNegatif(MouvementDeStockDto dto);
+    MouvementDeStockDto correctionStockNeg(MouvementDeStockDto dto);
 
 }

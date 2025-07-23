@@ -5,10 +5,15 @@
 
 package com.salah.gestiondestock.Dtos;
 
+import lombok.Builder;
+import lombok.Data;
+
 /**
  *
  * @author bahac
  */
+@Data
+@Builder
 public class ChangerMotDePasseUtilisateurDto {
 
         private Integer id;

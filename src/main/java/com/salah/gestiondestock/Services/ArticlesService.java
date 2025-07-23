@@ -1,7 +1,12 @@
 package com.salah.gestiondestock.Services;
 
 import com.salah.gestiondestock.Dtos.ArticlesDto;
+
 import java.util.List;
+
+import com.salah.gestiondestock.Dtos.LigneCommandeClientDto;
+import com.salah.gestiondestock.Dtos.LigneCommandeFournisseurDto;
+import com.salah.gestiondestock.Dtos.LigneVenteDto;
 
 public interface ArticlesService {
     /**
@@ -12,9 +17,22 @@ public interface ArticlesService {
      */
 
     ArticlesDto save(ArticlesDto dto);
-    ArticlesDto update(Long id, ArticlesDto dto);
+
     ArticlesDto findById(Integer id);
+
+    ArticlesDto findByCodeArticle(String codeArticle);
+
     List<ArticlesDto> findAll();
+
+    List<LigneVenteDto> findHistoriqueVentes(Integer idArticle);
+
+    List<LigneCommandeClientDto> findHistoriqueCommandeClient(Integer idArticle);
+
+    List<LigneCommandeFournisseurDto> findHistoriqueCommandeFournisseur(Integer idArticle);
+
+    List<ArticlesDto> findAllArticleByIdCategory(Integer idCategory);
+
     void delete(Integer id);
+
 
 }

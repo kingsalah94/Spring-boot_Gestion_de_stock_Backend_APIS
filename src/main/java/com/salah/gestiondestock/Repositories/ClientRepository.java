@@ -1,6 +1,5 @@
 package com.salah.gestiondestock.Repositories;
 
-import com.salah.gestiondestock.Dtos.ClientDto;
 import com.salah.gestiondestock.model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 

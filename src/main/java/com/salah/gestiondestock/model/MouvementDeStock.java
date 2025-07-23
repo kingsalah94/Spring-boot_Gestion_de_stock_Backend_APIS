@@ -16,8 +16,8 @@ import java.time.Instant;
 @Table(name = "MouvementDeStocks")
 public class MouvementDeStock extends AbstractEntity{
 
-    @Column(name = "datemvt")
-    private Instant dateMvt;
+    @Column(name = "dateMouvement")
+    private Instant dateMouvement;
 
     @Column(name = "quantite")
     private BigDecimal quantite;

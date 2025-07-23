@@ -1,13 +1,7 @@
 package com.salah.gestiondestock.model;
 
-import com.salah.gestiondestock.Enums.StatutCommande;
-import com.salah.gestiondestock.Enums.StatutPaiement;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 

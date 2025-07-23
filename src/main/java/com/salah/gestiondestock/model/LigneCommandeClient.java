@@ -15,7 +15,7 @@ public class LigneCommandeClient extends AbstractEntity{
 
     @ManyToOne
     @JoinColumn(name = "idarticle")
-    private Articles article;
+    private Articles articles;
 
     @ManyToOne
     @JoinColumn(name = "idcommandeclient")

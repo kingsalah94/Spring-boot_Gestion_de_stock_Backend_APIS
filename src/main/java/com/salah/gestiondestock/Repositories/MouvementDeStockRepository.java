@@ -3,6 +3,7 @@ package com.salah.gestiondestock.Repositories;
 import com.salah.gestiondestock.model.MouvementDeStock;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -8,8 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 
-public interface CommandClientRepository extends JpaRepository<CommandClient,Integer> {
+public interface CommandClientRepository extends JpaRepository<CommandClient, Integer> {
 
     Optional<CommandClient> findCommandClientByCode(String code);
     List<CommandClient> findAllByClient(Integer idClient);
+    //List<CommandeClient> findAllByFournisseur(Integer id);
 }
