@@ -11,17 +11,12 @@ import com.salah.gestiondestock.Repositories.RolesRepository;
 import com.salah.gestiondestock.Services.EntrepriseService;
 import com.salah.gestiondestock.Services.UtilisateurService;
 import com.salah.gestiondestock.Validators.EntrepriseValisator;
-import com.salah.gestiondestock.model.Entreprise;
 
-import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.View;
 
 import java.time.Instant;
 import java.util.List;
@@ -30,14 +25,19 @@ import java.util.stream.Collectors;
 @Transactional(rollbackOn = Exception.class)
 @Service
 @Slf4j
-@AllArgsConstructor
 public class EntrepriseServiceImpl implements EntrepriseService {
 
    private EntrpriseRepository entrepriseRepository;
-  private UtilisateurService utilisateurService;
-  private RolesRepository rolesRepository;
+   private UtilisateurService utilisateurService;
+   private RolesRepository rolesRepository;
 
- 
+ @Autowired
+  public EntrepriseServiceImpl(EntrpriseRepository entrepriseRepository, UtilisateurService utilisateurService,
+      RolesRepository rolesRepository) {
+    this.entrepriseRepository = entrepriseRepository;
+    this.utilisateurService = utilisateurService;
+    this.rolesRepository = rolesRepository;
+  }
 
   @Override
   public EntrepriseDto save(EntrepriseDto dto) {

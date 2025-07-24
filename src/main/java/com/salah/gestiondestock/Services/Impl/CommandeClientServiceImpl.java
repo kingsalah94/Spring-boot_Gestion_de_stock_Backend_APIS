@@ -43,7 +43,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class CommandeClientServiceImpl implements CommandeClientService {
 
    private CommandClientRepository commandeClientRepository;
@@ -52,6 +51,16 @@ public class CommandeClientServiceImpl implements CommandeClientService {
   private ArticlesRepository articleRepository;
   private MouvementStockService mvtStkService;
 
+  @Autowired
+  public CommandeClientServiceImpl(CommandClientRepository commandeClientRepository,
+      ClientRepository clientRepository, ArticlesRepository articleRepository, LigneCommandeClientRepository ligneCommandeClientRepository,
+      MouvementStockService mvtStkService) {
+    this.commandeClientRepository = commandeClientRepository;
+    this.ligneCommandeClientRepository = ligneCommandeClientRepository;
+    this.clientRepository = clientRepository;
+    this.articleRepository = articleRepository;
+    this.mvtStkService = mvtStkService;
+  }
   
 
   @Override
@@ -150,7 +159,7 @@ public class CommandeClientServiceImpl implements CommandeClientService {
       log.error("Commande client ID is NULL");
       return;
     }
-    List<LigneCommandeClient> ligneCommandeClients = ligneCommandeClientRepository.findAllByCommandClient(id);
+    List<LigneCommandeClient> ligneCommandeClients = ligneCommandeClientRepository.findAllByCommandeClientId(id);
     if (!ligneCommandeClients.isEmpty()) {
       throw new InvalidOperationException("Impossible de supprimer une commande client deja utilisee",
           ErrorCodes.COMMANDE_CLIENT_ALREADY_IN_USE);
@@ -160,7 +169,7 @@ public class CommandeClientServiceImpl implements CommandeClientService {
 
   @Override
   public List<LigneCommandeClientDto> findAllLignesCommandesClientByCommandeClientId(Integer idCommande) {
-    return ligneCommandeClientRepository.findAllByCommandClient(idCommande).stream()
+    return ligneCommandeClientRepository.findAllByCommandeClientId(idCommande).stream()
         .map(LigneCommandeClientDto::fromEntity)
         .collect(Collectors.toList());
   }
@@ -309,7 +318,7 @@ public class CommandeClientServiceImpl implements CommandeClientService {
   }
 
   private void updateMvtStk(Integer idCommande) {
-    List<LigneCommandeClient> ligneCommandeClients = ligneCommandeClientRepository.findAllByCommandClient(idCommande);
+    List<LigneCommandeClient> ligneCommandeClients = ligneCommandeClientRepository.findAllByCommandeClientId(idCommande);
     ligneCommandeClients.forEach(lig -> {
       effectuerSortie(lig);
     });

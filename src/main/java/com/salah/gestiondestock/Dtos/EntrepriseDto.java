@@ -1,5 +1,6 @@
 package com.salah.gestiondestock.Dtos;
 
+import java.time.Instant;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,6 +15,9 @@ public class EntrepriseDto {
 
     private Integer id;
     private String nom;
+
+    private Instant creationDate;
+    private Instant lastModifiedDate;
 
     private String description;
 
@@ -41,6 +45,7 @@ public class EntrepriseDto {
     return EntrepriseDto.builder()
         .id(entreprise.getId())
         .nom(entreprise.getNom())
+        .creationDate(Instant.now())
         .description(entreprise.getDescription())
         .adresseDto(AdresseDto.fromEntity(entreprise.getAdresse()))
         .codeFiscal(entreprise.getCodeFiscal())
@@ -58,6 +63,7 @@ public class EntrepriseDto {
     Entreprise entreprise = new Entreprise();
     entreprise.setId(dto.getId());
     entreprise.setNom(dto.getNom());
+    entreprise.setCreationDate(Instant.now());
     entreprise.setDescription(dto.getDescription());
     entreprise.setAdresse(AdresseDto.toEntity(dto.getAdresseDto()));
     entreprise.setCodeFiscal(dto.getCodeFiscal());

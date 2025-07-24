@@ -3,6 +3,7 @@ package com.salah.gestiondestock.Dtos;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,6 +15,7 @@ public class RolesDto {
 
     private Integer id;
     private String roleName;
+    private Instant creationDate;
 
     @JsonIgnore
     private UtilisateurDto utilisateurDto;
@@ -27,6 +29,7 @@ public class RolesDto {
     return RolesDto.builder()
         .id(roles.getId())
         .roleName(roles.getRoleName())
+        .creationDate(Instant.now())
         .build();
   }
 
@@ -37,6 +40,7 @@ public class RolesDto {
     Roles roles = new Roles();
     roles.setId(dto.getId());
     roles.setRoleName(dto.getRoleName());
+    roles.setCreationDate(Instant.now());
     roles.setUtilisateur(UtilisateurDto.toEntity(dto.getUtilisateurDto()));
     return roles;
   }

@@ -22,11 +22,17 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@AllArgsConstructor
 public class MouvementDeStockServiceImpl implements MouvementStockService {
     
     private MouvementDeStockRepository repository;
   private ArticlesService articleService;
+
+@Autowired
+  public MouvementDeStockServiceImpl(MouvementDeStockRepository repository, ArticlesService articleService) {
+    this.repository = repository;
+    this.articleService = articleService;
+  }
+
 
 
   @Override
@@ -41,7 +47,7 @@ public class MouvementDeStockServiceImpl implements MouvementStockService {
 
   @Override
   public List<MouvementDeStockDto> mvtStkArticle(Integer idArticle) {
-    return repository.findAllByArticles(idArticle).stream()
+    return repository.findAllByArticleId(idArticle).stream()
         .map(MouvementDeStockDto::fromEntity)
         .collect(Collectors.toList());
   }

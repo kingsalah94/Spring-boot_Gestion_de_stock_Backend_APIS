@@ -13,7 +13,6 @@ import com.salah.gestiondestock.Repositories.LigneCommadeFournisseurRepository;
 import com.salah.gestiondestock.Repositories.LigneCommandeClientRepository;
 import com.salah.gestiondestock.Services.ArticlesService;
 import com.salah.gestiondestock.Validators.ArticleValidator;
-import com.salah.gestiondestock.model.Articles;
 import com.salah.gestiondestock.model.LigneCommandeClient;
 
 import lombok.AllArgsConstructor;
@@ -25,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.View;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,16 +34,25 @@ import com.salah.gestiondestock.model.LigneVente;
 
 @Service
 @Slf4j
-@NoArgsConstructor
-@AllArgsConstructor
 public class ArticlesServiceImpl implements ArticlesService {
 
-    private static final Logger log = LoggerFactory.getLogger(ArticlesServiceImpl.class);
+  private static final Logger log = LoggerFactory.getLogger(ArticlesServiceImpl.class);
 
   private ArticlesRepository articleRepository;
   private LigneVentesRepository venteRepository;
   private LigneCommadeFournisseurRepository commandeFournisseurRepository;
   private LigneCommandeClientRepository commandeClientRepository;
+
+  @Autowired
+  public ArticlesServiceImpl(
+      ArticlesRepository articleRepository,
+      LigneVentesRepository venteRepository, LigneCommadeFournisseurRepository commandeFournisseurRepository,
+      LigneCommandeClientRepository commandeClientRepository) {
+    this.articleRepository = articleRepository;
+    this.venteRepository = venteRepository;
+    this.commandeFournisseurRepository = commandeFournisseurRepository;
+    this.commandeClientRepository = commandeClientRepository;
+  }
 
 
 
@@ -103,28 +110,28 @@ public class ArticlesServiceImpl implements ArticlesService {
 
   @Override
   public List<LigneVenteDto> findHistoriqueVentes(Integer idArticle) {
-    return venteRepository.findAllByArticle(idArticle).stream()
+    return venteRepository.findAllByArticleId(idArticle).stream()
         .map(LigneVenteDto::fromEntity)
         .collect(Collectors.toList());
   }
 
   @Override
   public List<LigneCommandeClientDto> findHistoriqueCommandeClient(Integer idArticle) {
-    return commandeClientRepository.findAllByArticle(idArticle).stream()
+    return commandeClientRepository.findAllByArticleId(idArticle).stream()
         .map(LigneCommandeClientDto::fromEntity)
         .collect(Collectors.toList());
   }
 
   @Override
   public List<LigneCommandeFournisseurDto> findHistoriqueCommandeFournisseur(Integer idArticle) {
-    return commandeFournisseurRepository.findAllByArticle(idArticle).stream()
+    return commandeFournisseurRepository.findAllByArticleId(idArticle).stream()
         .map(LigneCommandeFournisseurDto::fromEntity)
         .collect(Collectors.toList());
   }
 
   @Override
   public List<ArticlesDto> findAllArticleByIdCategory(Integer idCategory) {
-    return articleRepository.findAllByCategory(idCategory).stream()
+    return articleRepository.findAllByCategoryId(idCategory).stream()
         .map(ArticlesDto::fromEntity)
         .collect(Collectors.toList());
   }
@@ -135,16 +142,16 @@ public class ArticlesServiceImpl implements ArticlesService {
       log.error("Article ID is null");
       return;
     }
-    List<LigneCommandeClient> ligneCommandeClients = commandeClientRepository.findAllByArticle(id);
+    List<LigneCommandeClient> ligneCommandeClients = commandeClientRepository.findAllByArticleId(id);
     if (!ligneCommandeClients.isEmpty()) {
       throw new InvalidOperationException("Impossible de supprimer un article deja utilise dans des commandes client", ErrorCodes.ARTICLE_ALREADY_IN_USE);
     }
-    List<LigneCommandeFournisseur> ligneCommandeFournisseurs = commandeFournisseurRepository.findAllByArticle(id);
+    List<LigneCommandeFournisseur> ligneCommandeFournisseurs = commandeFournisseurRepository.findAllByArticleId(id);
     if (!ligneCommandeFournisseurs.isEmpty()) {
       throw new InvalidOperationException("Impossible de supprimer un article deja utilise dans des commandes fournisseur",
           ErrorCodes.ARTICLE_ALREADY_IN_USE);
     }
-    List<LigneVente> ligneVentes = venteRepository.findAllByArticle(id);
+    List<LigneVente> ligneVentes = venteRepository.findAllByArticleId(id);
     if (!ligneVentes.isEmpty()) {
       throw new InvalidOperationException("Impossible de supprimer un article deja utilise dans des ventes",
           ErrorCodes.ARTICLE_ALREADY_IN_USE);

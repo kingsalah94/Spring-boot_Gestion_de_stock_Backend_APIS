@@ -29,6 +29,12 @@ public class FournisseurServiceImpl implements FournisseurService {
    private FournisseurRepository fournisseurRepository;
   private CommandFournisseurRepository commandeFournisseurRepository;
 
+   @Autowired
+  public FournisseurServiceImpl(FournisseurRepository fournisseurRepository,
+      CommandFournisseurRepository commandeFournisseurRepository) {
+    this.fournisseurRepository = fournisseurRepository;
+    this.commandeFournisseurRepository = commandeFournisseurRepository;
+  }
 
 
   @Override
@@ -73,7 +79,7 @@ public class FournisseurServiceImpl implements FournisseurService {
       log.error("Fournisseur ID is null");
       return;
     }
-    List<CommandClient> commandeFournisseur = commandeFournisseurRepository.findAllByFournisseur(id);
+    List<CommandClient> commandeFournisseur = commandeFournisseurRepository.findAllByFournisseurId(id);
     if (!commandeFournisseur.isEmpty()) {
       throw new InvalidOperationException("Impossible de supprimer un fournisseur qui a deja des commandes",
           ErrorCodes.FOURNISSEUR_ALREADY_IN_USE);

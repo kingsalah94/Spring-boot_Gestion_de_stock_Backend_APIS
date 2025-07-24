@@ -42,7 +42,6 @@ import org.springframework.util.StringUtils;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class CommandeFournisseurServiceImpl implements CommandeFournisseurService {
 
     private CommandFournisseurRepository commandeFournisseurRepository;
@@ -52,6 +51,16 @@ public class CommandeFournisseurServiceImpl implements CommandeFournisseurServic
   private MouvementStockService mvtStkService;
 
   
+  @Autowired
+  public CommandeFournisseurServiceImpl(CommandFournisseurRepository commandeFournisseurRepository,
+      FournisseurRepository fournisseurRepository, ArticlesRepository articleRepository,
+      LigneCommadeFournisseurRepository ligneCommandeFournisseurRepository, MouvementStockService mvtStkService) {
+    this.commandeFournisseurRepository = commandeFournisseurRepository;
+    this.ligneCommandeFournisseurRepository = ligneCommandeFournisseurRepository;
+    this.fournisseurRepository = fournisseurRepository;
+    this.articleRepository = articleRepository;
+    this.mvtStkService = mvtStkService;
+  }
 
   @Override
   public CommandFournisseurDto save(CommandFournisseurDto dto) {
@@ -145,7 +154,7 @@ public class CommandeFournisseurServiceImpl implements CommandeFournisseurServic
 
   @Override
   public List<LigneCommandeFournisseurDto> findAllLignesCommandesFournisseurByCommandeFournisseurId(Integer idCommande) {
-    return ligneCommandeFournisseurRepository.findAllByCommandeFournisseurs(idCommande).stream()
+    return ligneCommandeFournisseurRepository.findAllByCommandeFournisseurId(idCommande).stream()
         .map(LigneCommandeFournisseurDto::fromEntity)
         .collect(Collectors.toList());
   }
@@ -156,7 +165,7 @@ public class CommandeFournisseurServiceImpl implements CommandeFournisseurServic
       log.error("Commande fournisseur ID is NULL");
       return;
     }
-    List<LigneCommandeFournisseur> ligneCommandeFournisseurs = ligneCommandeFournisseurRepository.findAllByCommandeFournisseurs(id);
+    List<LigneCommandeFournisseur> ligneCommandeFournisseurs = ligneCommandeFournisseurRepository.findAllByCommandeFournisseurId(id);
     if (!ligneCommandeFournisseurs.isEmpty()) {
       throw new InvalidOperationException("Impossible de supprimer une commande fournisseur deja utilisee",
           ErrorCodes.COMMANDE_FOURNISSEUR_ALREADY_IN_USE);
@@ -307,7 +316,7 @@ public class CommandeFournisseurServiceImpl implements CommandeFournisseurServic
   }
 
   private void updateMvtStk(Integer idCommande) {
-    List<LigneCommandeFournisseur> ligneCommandeFournisseur = ligneCommandeFournisseurRepository.findAllByCommandeFournisseurs(idCommande);
+    List<LigneCommandeFournisseur> ligneCommandeFournisseur = ligneCommandeFournisseurRepository.findAllByCommandeFournisseurId(idCommande);
     ligneCommandeFournisseur.forEach(lig -> {
       effectuerEntree(lig);
     });

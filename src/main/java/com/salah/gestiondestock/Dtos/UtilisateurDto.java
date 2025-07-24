@@ -17,6 +17,7 @@ public class UtilisateurDto {
     private Integer id;
     private String nom;
     private String prenom;
+    private Instant creationDate;
     private String motDePasse;
     private String email;
     private Instant dateDeNaissance;
@@ -35,6 +36,7 @@ public class UtilisateurDto {
         .id(utilisateur.getId())
         .nom(utilisateur.getNom())
         .prenom(utilisateur.getPrenom())
+        .creationDate(Instant.now())
         .email(utilisateur.getEmail())
         .motDePasse(utilisateur.getMoteDePasse())
         .dateDeNaissance(utilisateur.getDateDeNaissance())
@@ -59,6 +61,7 @@ public class UtilisateurDto {
     utilisateur.setId(dto.getId());
     utilisateur.setNom(dto.getNom());
     utilisateur.setPrenom(dto.getPrenom());
+    utilisateur.setCreationDate(Instant.now());
     utilisateur.setEmail(dto.getEmail());
     utilisateur.setMoteDePasse(dto.getMotDePasse());
     utilisateur.setDateDeNaissance(dto.getDateDeNaissance());

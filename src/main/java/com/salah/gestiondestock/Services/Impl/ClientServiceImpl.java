@@ -26,11 +26,16 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
  private ClientRepository clientRepository;
   private CommandClientRepository commandeClientRepository;
+
+   @Autowired
+  public ClientServiceImpl(ClientRepository clientRepository, CommandClientRepository commandeClientRepository) {
+    this.clientRepository = clientRepository;
+    this.commandeClientRepository = commandeClientRepository;
+  }
 
   @Override
   public ClientDto save(ClientDto dto) {
@@ -74,7 +79,7 @@ public class ClientServiceImpl implements ClientService {
       log.error("Client ID is null");
       return;
     }
-    List<CommandClient> commandeClients = commandeClientRepository.findAllByClient(id);
+    List<CommandClient> commandeClients = commandeClientRepository.findAllByClientId(id);
     if (!commandeClients.isEmpty()) {
       throw new InvalidOperationException("Impossible de supprimer un client qui a deja des commande clients",
           ErrorCodes.CLIENT_ALREADY_IN_USE);

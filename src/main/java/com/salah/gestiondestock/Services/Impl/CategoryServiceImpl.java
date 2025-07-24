@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
-@NoArgsConstructor
 public class CategoryServiceImpl implements CategorieService {
 
     private static final Logger log = LoggerFactory.getLogger(ArticlesServiceImpl.class);
@@ -37,6 +35,11 @@ public class CategoryServiceImpl implements CategorieService {
    private CategoryRepository categoryRepository;
     private ArticlesRepository articleRepository;
 
+@Autowired
+  public CategoryServiceImpl(CategoryRepository categoryRepository, ArticlesRepository articleRepository) {
+    this.categoryRepository = categoryRepository;
+    this.articleRepository = articleRepository;
+  }
 
 
   @Override
@@ -92,7 +95,7 @@ public class CategoryServiceImpl implements CategorieService {
       log.error("Category ID is null");
       return;
     }
-    List<Articles> articles = articleRepository.findAllByCategory(id);
+    List<Articles> articles = articleRepository.findAllByCategoryId(id);
     if (!articles.isEmpty()) {
       throw new InvalidOperationException("Impossible de supprimer cette categorie qui est deja utilise",
           ErrorCodes.CATEGORY_ALREADY_IN_USE);

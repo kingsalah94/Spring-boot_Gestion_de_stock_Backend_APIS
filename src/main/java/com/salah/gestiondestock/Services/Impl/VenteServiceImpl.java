@@ -51,7 +51,14 @@ public class VenteServiceImpl implements VenteService{
   private LigneVentesRepository ligneVenteRepository;
   private MouvementStockService mvtStkService;
 
- 
+ @Autowired
+  public VenteServiceImpl(ArticlesRepository articleRepository, VentesRepository ventesRepository,
+      LigneVentesRepository ligneVenteRepository, MouvementStockService mvtStkService) {
+    this.articleRepository = articleRepository;
+    this.ventesRepository = ventesRepository;
+    this.ligneVenteRepository = ligneVenteRepository;
+    this.mvtStkService = mvtStkService;
+  }
 
   @Override
   public VentesDto save(VentesDto dto) {
@@ -124,7 +131,7 @@ public class VenteServiceImpl implements VenteService{
       log.error("Vente ID is NULL");
       return;
     }
-    List<LigneVente> ligneVentes = ligneVenteRepository.findAllByVente(id);
+    List<LigneVente> ligneVentes = ligneVenteRepository.findAllByVenteId(id);
     if (!ligneVentes.isEmpty()) {
       throw new InvalidOperationException("Impossible de supprimer une vente ...",
           ErrorCodes.VENTE_ALREADY_IN_USE);
